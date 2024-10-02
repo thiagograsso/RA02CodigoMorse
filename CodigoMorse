@@ -1,0 +1,181 @@
+import java.util.Scanner;
+
+// Classe que representa um nó da árvore binária
+class Nodo {
+    char caractere;               // Caractere armazenado no nó
+    Nodo filhoEsquerdo;          // Filho à esquerda
+    Nodo filhoDireito;           // Filho à direita
+
+    // Construtor padrão (nó vazio)
+    public Nodo() {
+        this.caractere = '\0'; // Nó vazio (sem caractere)
+        this.filhoEsquerdo = null;
+        this.filhoDireito = null;
+    }
+
+    // Construtor com caractere
+    public Nodo(char caractere) {
+        this.caractere = caractere;
+        this.filhoEsquerdo = null;
+        this.filhoDireito = null;
+    }
+}
+
+// Classe que representa a árvore binária Morse
+class ArvoreBinariaMorse {
+    Nodo raiz; // Raiz da árvore
+
+    public ArvoreBinariaMorse() {
+        raiz = new Nodo(); // Inicializa com uma raiz vazia
+    }
+
+    // Método para inserir um caractere de acordo com o código Morse
+    public void inserir(String codigoMorse, char caractere) {
+        Nodo atual = raiz;
+
+        // Percorre o código Morse
+        for (int i = 0; i < codigoMorse.length(); i++) {
+            char simbolo = codigoMorse.charAt(i);
+
+            // Move para a esquerda ou direita com base no símbolo
+            if (simbolo == '.') {
+                if (atual.filhoEsquerdo == null) {
+                    atual.filhoEsquerdo = new Nodo(); // Cria nó à esquerda se não existir
+                }
+                atual = atual.filhoEsquerdo;
+            } else if (simbolo == '-') {
+                if (atual.filhoDireito == null) {
+                    atual.filhoDireito = new Nodo(); // Cria nó à direita se não existir
+                }
+                atual = atual.filhoDireito;
+            }
+        }
+
+        atual.caractere = caractere; // Atribui o caractere ao nó correspondente
+    }
+
+    // Método para buscar um caractere a partir de uma sequência em código Morse
+    public Character buscar(String codigoMorse) {
+        Nodo atual = raiz;
+
+        // Percorre o código Morse
+        for (int i = 0; i < codigoMorse.length(); i++) {
+            char simbolo = codigoMorse.charAt(i);
+
+            // Move para a esquerda ou direita com base no símbolo
+            if (simbolo == '.') {
+                atual = atual.filhoEsquerdo;
+            } else if (simbolo == '-') {
+                atual = atual.filhoDireito;
+            }
+
+            // Se o caminho não existe, retorna nulo
+            if (atual == null) {
+                return null;
+            }
+        }
+
+        // Retorna o caractere ou nulo se não houver
+        return atual.caractere != '\0' ? atual.caractere : null;
+    }
+
+    // Método para exibir a árvore binária de forma hierárquica (pré-ordem)
+    public void exibirArvore() {
+        exibirArvoreRecursivo(raiz, 0);
+    }
+
+    private void exibirArvoreRecursivo(Nodo nodo, int nivel) {
+        if (nodo == null) {
+            return;
+        }
+
+        // Exibe o caractere se existir, caso contrário, não faz nada
+        if (nodo.caractere != '\0') {
+            // Indenta a saída com base no nível da árvore
+            for (int i = 0; i < nivel; i++) {
+                System.out.print("   ");
+            }
+            System.out.println(nodo.caractere);
+        }
+
+        // Chama recursivamente para os filhos esquerdo e direito
+        exibirArvoreRecursivo(nodo.filhoEsquerdo, nivel + 1);
+        exibirArvoreRecursivo(nodo.filhoDireito, nivel + 1);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        ArvoreBinariaMorse arvore = new ArvoreBinariaMorse();
+
+        // Inserindo as letras do alfabeto
+        arvore.inserir(".-", 'A');
+        arvore.inserir("-...", 'B');
+        arvore.inserir("-.-.", 'C');
+        arvore.inserir("-..", 'D');
+        arvore.inserir(".", 'E');
+        arvore.inserir("..-.", 'F');
+        arvore.inserir("--.", 'G');
+        arvore.inserir("....", 'H');
+        arvore.inserir("..", 'I');
+        arvore.inserir(".---", 'J');
+        arvore.inserir("-.-", 'K');
+        arvore.inserir(".-..", 'L');
+        arvore.inserir("--", 'M');
+        arvore.inserir("-.", 'N');
+        arvore.inserir("---", 'O');
+        arvore.inserir(".--.", 'P');
+        arvore.inserir("--.-", 'Q');
+        arvore.inserir(".-.", 'R');
+        arvore.inserir("...", 'S');
+        arvore.inserir("-", 'T');
+        arvore.inserir("..-", 'U');
+        arvore.inserir("...-", 'V');
+        arvore.inserir(".--", 'W');
+        arvore.inserir("-..-", 'X');
+        arvore.inserir("-.--", 'Y');
+        arvore.inserir("--..", 'Z');
+
+        // Inserindo os números de 0 a 9
+        arvore.inserir("-----", '0');
+        arvore.inserir(".----", '1');
+        arvore.inserir("..---", '2');
+        arvore.inserir("...--", '3');
+        arvore.inserir("....-", '4');
+        arvore.inserir(".....", '5');
+        arvore.inserir("-....", '6');
+        arvore.inserir("--...", '7');
+        arvore.inserir("---..", '8');
+        arvore.inserir("----.", '9');
+
+        // Exibe alguns exemplos
+        System.out.println(arvore.buscar("..."));    // Saída: S
+        System.out.println(arvore.buscar("---"));    // Saída: O
+        System.out.println(arvore.buscar(".----"));  // Saída: 1
+        System.out.println(arvore.buscar("-----"));  // Saída: 0
+
+        // Exibir árvore
+        System.out.println("Exibição da Árvore:");
+        arvore.exibirArvore();
+
+        // Adicionando input do usuário
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Insira uma sequência em código Morse para buscar (use . para pontos e - para traços): ");
+        String codigoMorseUsuario = scanner.nextLine();
+
+        // Validar entrada do usuário
+        if (!codigoMorseUsuario.matches("[.-]*")) {
+            System.out.println("Entrada inválida! Por favor, use apenas '.' e '-'.");
+        } else {
+            // Buscar caractere correspondente ao código Morse inserido pelo usuário
+            Character resultado = arvore.buscar(codigoMorseUsuario);
+            if (resultado != null) {
+                System.out.println("Caractere correspondente: " + resultado);
+            } else {
+                System.out.println("Código Morse não encontrado na árvore.");
+            }
+        }
+
+        scanner.close();
+    }
+}
